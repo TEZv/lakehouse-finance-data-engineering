@@ -43,6 +43,13 @@ def ingest_bronze(spark: SparkSession, input_dir: str | Path, bronze_path: str) 
 
 
 def clean_events(bronze: DataFrame) -> DataFrame:
+    # A Bronze table can predate an optional source-field addition. Preserve a
+    # stable Silver contract by materializing the field as NULL until it arrives.
+    trade_venue = (
+        F.col("trade_venue")
+        if "trade_venue" in bronze.columns
+        else F.lit(None).cast("string")
+    )
     return (
         bronze.select(
             "event_id",
@@ -55,7 +62,7 @@ def clean_events(bronze: DataFrame) -> DataFrame:
             F.col("price").cast("decimal(18,4)").alias("price"),
             "currency",
             F.to_timestamp("source_updated_at").alias("source_updated_at"),
-            "trade_venue",
+            trade_venue.alias("trade_venue"),
             "_source_file",
             "_ingested_at",
         )
