@@ -1,0 +1,4 @@
+[
+  {"event_id": "T-1001", "account_id": "ACC-01", "instrument": "EUROSTOXX50", "side": "BUY", "event_ts": "2026-08-01T09:00:00Z", "quantity": 12, "price": 5300.00, "currency": "EUR", "trade_venue": "XEUR", "source_updated_at": "2026-08-01T13:00:00Z"},
+  {"event_id": "T-1004", "account_id": "ACC-02", "instrument": "USDPLN", "side": "SELL", "event_ts": "2026-08-01T14:00:00Z", "quantity": 200, "price": 4.08, "currency": "PLN", "trade_venue": "OTC", "source_updated_at": "2026-08-01T14:00:01Z"}
+]

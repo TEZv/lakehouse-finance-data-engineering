@@ -1,0 +1,9 @@
+[project]
+name = "lakehouse-finance-data-engineering"
+version = "0.1.0"
+description = "Reproducible PySpark and Delta Lake portfolio project"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

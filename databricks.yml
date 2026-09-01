@@ -1,0 +1,12 @@
+bundle:
+  name: lakehouse-finance-data-engineering
+
+include:
+  - resources/databricks/*.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: ${DATABRICKS_HOST}
