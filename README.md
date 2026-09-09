@@ -2,17 +2,17 @@
 
 [![PySpark and Delta CI](https://github.com/TEZv/lakehouse-finance-data-engineering/actions/workflows/pyspark-ci.yml/badge.svg)](https://github.com/TEZv/lakehouse-finance-data-engineering/actions/workflows/pyspark-ci.yml)
 
-## 📨 Kafka extension and platform roadmap
+## 🧩 Verified platform extensions
 
-[Kafka delivery and replay lab](labs/kafka/README.md) adds a real producer/consumer example, a transactional SQLite learning sink, version handling, quarantine and replay tests. It is a separate transport/reliability exercise, not yet connected to the Spark pipeline. [Broker CI results](https://github.com/TEZv/lakehouse-finance-data-engineering/actions/workflows/kafka-ci.yml) distinguish executable configuration from a verified run.
+[Kafka delivery and replay lab](labs/kafka/README.md) adds a real producer/consumer example, a transactional SQLite learning sink, version handling, quarantine and replay tests. A shared batch adapter connects to [Airflow → dbt](labs/README.md); [Hive/HDFS](labs/hive-hadoop/README.md) and [Kubernetes](labs/kubernetes/README.md) provide real storage/query and Job-execution labs. These modules are not yet connected to the original Spark pipeline.
 
-See the shared [platform coverage register](https://github.com/TEZv/Data-Specialist-Portfolio/blob/main/docs/PLATFORM_COVERAGE.md) for planned Airflow, dbt, Hive/Hadoop, Kubernetes and personal cloud evidence.
+✅ **All four new platform jobs passed:** [integration run 34409326771](https://github.com/TEZv/lakehouse-finance-data-engineering/actions/runs/34409326771). See [exact evidence](docs/PLATFORM_EXECUTION_EVIDENCE.md), [run instructions](labs/README.md), [interview explanations in Ukrainian](docs/PLATFORM_INTERVIEW_UA.md), and the shared [coverage register](https://github.com/TEZv/Data-Specialist-Portfolio/blob/main/docs/PLATFORM_COVERAGE.md). Personal cloud deployment remains a separate gate.
 
-**Scope correction:** the existing Spark pipeline is a small batch demo. Its test verifies Silver row-count stability on replay, not full-pipeline idempotency: Bronze and quarantine append again. Gold represents daily trading activity, not full financial exposure. Databricks execution is unverified; the job definition still needs workspace adaptation. The original local-runtime wording below should not be read as a verified local Spark run.
+**Scope:** the existing Spark pipeline is a small batch demo. Its test verifies Silver row-count stability on replay, not full-pipeline idempotency: Bronze and quarantine append again. Gold represents daily trading activity, not full financial exposure. Databricks execution is unverified; the job definition still needs workspace adaptation.
 
-A reproducible, synthetic-data **PySpark + Delta Lake** project showing how a financial-events feed moves through a Databricks-compatible Bronze / Silver / Gold lakehouse.
+A reproducible, synthetic-data **PySpark + Delta Lake** batch project with separate **Kafka, Airflow, dbt, Hive/HDFS and Kubernetes** execution labs. The Databricks job definition is a draft for future workspace adaptation.
 
-> Portfolio status: independent lab project. The code is tested locally and in GitHub Actions; no Databricks workspace deployment or commercial Databricks experience is claimed until a controlled deployment is completed.
+> Portfolio status: independent lab project. Spark/Delta and platform integration evidence comes from GitHub Actions. Standard-library batch/sink tests were also run locally. No Databricks workspace deployment or commercial platform experience is claimed.
 
 ## 🧭 Why this project exists
 
@@ -27,8 +27,8 @@ This is the lakehouse companion to the [MS SQL Server Data Engineering Portfolio
 ## 🔎 What a reviewer can verify
 
 - **Bronze:** append-only raw event ingestion with source metadata and Delta schema evolution;
-- **Silver:** typed transformation, deduplication, invalid-record quarantine and idempotent `MERGE` upserts;
-- **Gold:** daily account/instrument exposure and cash-flow aggregates ready for BI or risk analysis;
+- **Silver:** typed transformation, deduplication, invalid-record quarantine and `MERGE` upserts; the current replay test checks row count, not every value;
+- **Gold:** daily account/instrument trading activity and cash-flow aggregates, not a complete financial exposure model;
 - **Data quality:** explicit invariants for accepted, quarantined and deduplicated records;
 - **Reliability:** a rerun does not duplicate Silver records; late corrections update the existing event;
 - **Delivery:** GitHub Actions executes the same PySpark + Delta tests in a clean environment;
@@ -92,8 +92,9 @@ The output path is intentionally ignored by Git. GitHub Actions provides the pub
 
 Accurate today:
 
-- “Built and CI-validated a Databricks-compatible PySpark and Delta Lake lakehouse project.”
-- “Implemented medallion layers, schema evolution, Delta `MERGE`, data-quality checks and idempotent reruns.”
+- "Built and CI-validated a small PySpark and Delta Lake batch project."
+- "Implemented medallion layers, schema evolution, Delta `MERGE` and scoped data-quality/replay tests."
+- "Added executable Kafka, Airflow, dbt, Hive/HDFS and Kubernetes labs with CI evidence and documented limitations."
 
 Not accurate yet:
 
