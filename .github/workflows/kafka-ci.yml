@@ -1,0 +1,39 @@
+name: Kafka replay lab
+on:
+  push:
+    paths: ['labs/kafka/**', '.github/workflows/kafka-ci.yml']
+  pull_request:
+    paths: ['labs/kafka/**', '.github/workflows/kafka-ci.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  kafka:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m unittest discover -s labs/kafka -v
+      - run: pip install -r labs/kafka/requirements.txt
+      - name: Start isolated learning broker
+        run: docker run -d --name portfolio-kafka -p 127.0.0.1:9092:9092 apache/kafka:3.9.1
+      - name: Wait for broker
+        run: |
+          for attempt in $(seq 1 30); do
+            if docker exec portfolio-kafka /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list; then
+              exit 0
+            fi
+            sleep 2
+          done
+          exit 1
+      - name: Test broker delivery and replay
+        run: python labs/kafka/broker_demo.py
+      - name: Broker diagnostics
+        if: failure()
+        run: docker logs portfolio-kafka
+      - name: Stop disposable broker
+        if: always()
+        run: docker rm -f portfolio-kafka

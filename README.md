@@ -2,6 +2,14 @@
 
 [![PySpark and Delta CI](https://github.com/TEZv/lakehouse-finance-data-engineering/actions/workflows/pyspark-ci.yml/badge.svg)](https://github.com/TEZv/lakehouse-finance-data-engineering/actions/workflows/pyspark-ci.yml)
 
+## 📨 Kafka extension and platform roadmap
+
+[Kafka delivery and replay lab](labs/kafka/README.md) adds a real producer/consumer example, a transactional SQLite learning sink, version handling, quarantine and replay tests. It is a separate transport/reliability exercise, not yet connected to the Spark pipeline. [Broker CI results](https://github.com/TEZv/lakehouse-finance-data-engineering/actions/workflows/kafka-ci.yml) distinguish executable configuration from a verified run.
+
+See the shared [platform coverage register](https://github.com/TEZv/Data-Specialist-Portfolio/blob/main/docs/PLATFORM_COVERAGE.md) for planned Airflow, dbt, Hive/Hadoop, Kubernetes and personal cloud evidence.
+
+**Scope correction:** the existing Spark pipeline is a small batch demo. Its test verifies Silver row-count stability on replay, not full-pipeline idempotency: Bronze and quarantine append again. Gold represents daily trading activity, not full financial exposure. Databricks execution is unverified; the job definition still needs workspace adaptation. The original local-runtime wording below should not be read as a verified local Spark run.
+
 A reproducible, synthetic-data **PySpark + Delta Lake** project showing how a financial-events feed moves through a Databricks-compatible Bronze / Silver / Gold lakehouse.
 
 > Portfolio status: independent lab project. The code is tested locally and in GitHub Actions; no Databricks workspace deployment or commercial Databricks experience is claimed until a controlled deployment is completed.
