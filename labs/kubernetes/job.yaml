@@ -1,0 +1,63 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: event-batch
+  namespace: portfolio-de
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 120
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: batch
+          image: python:3.11.11-slim-bookworm
+          command: [python, /app/labs/kubernetes/run_batch.py]
+          env:
+            - name: PYTHONDONTWRITEBYTECODE
+              value: '1'
+            - name: INJECT_FAILURE
+              value: '0'
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: code
+              mountPath: /app/labs
+              readOnly: true
+            - name: work
+              mountPath: /work
+      volumes:
+        - name: work
+          emptyDir:
+            sizeLimit: 32Mi
+        - name: code
+          configMap:
+            name: event-batch-code
+            items:
+              - key: batch.py
+                path: platform/batch.py
+              - key: events.json
+                path: platform/events.json
+              - key: event_sink.py
+                path: kafka/event_sink.py
+              - key: run_batch.py
+                path: kubernetes/run_batch.py

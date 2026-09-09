@@ -1,0 +1,8 @@
+[
+  {"event_id": "E1", "version": 1, "quantity": 10},
+  {"event_id": "E1", "version": 1, "quantity": 10},
+  {"event_id": "E1", "version": 2, "quantity": 12},
+  {"event_id": "E1", "version": 1, "quantity": 10},
+  {"event_id": "E2", "version": 1, "quantity": 4},
+  {"event_id": "E3", "version": 1, "quantity": -1}
+]

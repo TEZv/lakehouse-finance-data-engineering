@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<configuration>
+  <property><name>javax.jdo.option.ConnectionURL</name><value>jdbc:derby:;databaseName=/tmp/portfolio-hive-metastore;create=true</value></property>
+  <property><name>hive.metastore.warehouse.dir</name><value>hdfs://localhost:9000/warehouse</value></property>
+  <property><name>hive.server2.enable.doAs</name><value>false</value></property>
+  <property><name>hive.execution.engine</name><value>mr</value></property>
+  <property><name>hive.exec.mode.local.auto</name><value>true</value></property>
+  <property><name>mapreduce.framework.name</name><value>local</value></property>
+  <property><name>hive.fetch.task.conversion</name><value>more</value></property>
+</configuration>

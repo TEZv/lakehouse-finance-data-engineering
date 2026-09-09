@@ -5,3 +5,8 @@ __pycache__/
 build/
 data/lakehouse/
 .DS_Store
+labs/dbt/target/
+labs/dbt/logs/
+labs/dbt/dbt_packages/
+*.duckdb
+*.sqlite

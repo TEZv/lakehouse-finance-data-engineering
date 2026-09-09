@@ -1,0 +1,9 @@
+name: event_analytics
+version: '1.0.0'
+config-version: 2
+profile: event_analytics
+model-paths: [models]
+test-paths: [tests]
+models:
+  event_analytics:
+    +materialized: view

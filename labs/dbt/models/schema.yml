@@ -1,0 +1,25 @@
+version: 2
+models:
+  - name: stg_events
+    description: Validated current-state JSON exported by the Python batch adapter.
+    columns:
+      - name: event_id
+        tests: [unique, not_null]
+      - name: version
+        tests: [not_null]
+      - name: quantity
+        tests: [not_null]
+  - name: fct_events
+    description: One current record per event_id; updates require a higher source version.
+    columns:
+      - name: event_id
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('stg_events')
+              field: event_id
+      - name: quantity
+        tests: [not_null]
+  - name: mart_event_summary
+    description: Count and quantity of current synthetic events; no financial valuation implied.

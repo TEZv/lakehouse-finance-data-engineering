@@ -1,0 +1,107 @@
+name: DE platform integration
+on:
+  push:
+    paths: ['labs/**', '.github/workflows/platform-ci.yml']
+  pull_request:
+    paths: ['labs/**', '.github/workflows/platform-ci.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  dbt:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m unittest discover -s labs/platform -v
+      - run: pip install -r labs/dbt/requirements.txt
+      - run: python labs/dbt/verify.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dbt-evidence
+          path: |
+            labs/dbt/target/manifest.json
+            labs/dbt/target/run_results.json
+            labs/dbt/target/catalog.json
+            labs/dbt/logs/
+  airflow:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__DAG_RUN_CONF_OVERRIDES_PARAMS: 'true'
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Isolated Airflow and dbt runtimes
+        run: |
+          python -m venv /tmp/portfolio-airflow-venv
+          /tmp/portfolio-airflow-venv/bin/pip install 'apache-airflow==2.10.5' --constraint https://raw.githubusercontent.com/apache/airflow/constraints-2.10.5/constraints-3.11.txt
+          python -m venv /tmp/portfolio-dbt-venv
+          /tmp/portfolio-dbt-venv/bin/pip install -r labs/dbt/requirements.txt
+      - name: Execute DAG with injected failure and recovery
+        env:
+          AIRFLOW_HOME: /tmp/portfolio-airflow
+          PLATFORM_OUTPUT_ROOT: /tmp/portfolio-airflow-output
+          DBT_EXECUTABLE: /tmp/portfolio-dbt-venv/bin/dbt
+        run: |
+          /tmp/portfolio-airflow-venv/bin/airflow db migrate
+          /tmp/portfolio-airflow-venv/bin/python labs/airflow/verify.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: airflow-evidence
+          path: |
+            /tmp/portfolio-airflow/logs/
+            /tmp/portfolio-airflow-output/*/summary.json
+  hive-hadoop:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python labs/hive-hadoop/prepare.py /tmp/portfolio-hive-input
+      - name: Start isolated HDFS and Hive
+        run: |
+          docker run -d --name portfolio-hive --hostname portfolio-hive --memory=4g \
+            -v "$PWD:/lab:ro" -v /tmp/portfolio-hive-input:/input:ro \
+            -e HADOOP_CONF_DIR=/lab/labs/hive-hadoop -e HIVE_CONF_DIR=/lab/labs/hive-hadoop \
+            --entrypoint bash apache/hive:4.0.0 /lab/labs/hive-hadoop/bootstrap.sh
+      - run: python labs/hive-hadoop/verify.py
+      - name: Capture diagnostics
+        if: always()
+        run: docker logs portfolio-hive
+      - name: Remove disposable container
+        if: always()
+        run: docker rm -f portfolio-hive
+  kubernetes:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: helm/kind-action@v1.12.0
+        with:
+          cluster_name: portfolio
+          version: v0.27.0
+          node_image: kindest/node:v1.32.2
+      - run: python labs/kubernetes/verify.py
+      - name: Diagnostics
+        if: always()
+        run: |
+          kubectl --context kind-portfolio -n portfolio-de get jobs,pods
+          kubectl --context kind-portfolio -n portfolio-de get events --sort-by=.metadata.creationTimestamp
+      - name: Remove dedicated local cluster
+        if: always()
+        run: kind delete cluster --name portfolio

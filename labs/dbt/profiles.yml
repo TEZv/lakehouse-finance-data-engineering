@@ -1,0 +1,7 @@
+event_analytics:
+  target: lab
+  outputs:
+    lab:
+      type: duckdb
+      path: "{{ env_var('DBT_DATABASE_PATH') }}"
+      threads: 1
