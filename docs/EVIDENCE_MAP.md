@@ -12,13 +12,14 @@
 
 ## Technology coverage strategy
 
-The vacancy material points to four groups. This portfolio intentionally covers the lakehouse group now; the other groups remain separately visible rather than being cosmetically “claimed”.
+The core pipeline and the platform labs are separate, inspectable artifacts. Their boundaries matter: a passing lab is evidence of a bounded implementation, not evidence of commercial production ownership.
 
 | Group | Current evidence | Next step |
 |---|---|---|
 | SQL and data modelling | MS SQL Server portfolio | Azure SQL controlled deployment |
 | Lakehouse / Big Data | This PySpark + Delta project | Databricks Free Edition job run |
-| Orchestration / streaming | Design boundary only | Airflow batch orchestration, then Kafka/Structured Streaming if target jobs need it |
+| Orchestration / streaming | [Airflow → dbt batch lab](../labs/airflow-dbt/) and [Kafka replay lab](../labs/kafka/) | Add Structured Streaming only when it is a coherent extension, not a badge |
+| Storage / execution platform | [Hive/HDFS lab](../labs/hive-hadoop/) and [restricted Kubernetes Job lab](../labs/kubernetes/) | One controlled cloud deployment with redacted evidence |
 | Cloud / platform | Terraform Azure SQL + GitHub Actions | One controlled cloud deployment with redacted evidence |
 
-Do not add Kafka, Airflow, Snowflake, BigQuery, ClickHouse, Kubernetes or Scala merely as badges. Add each only when a coherent target role repeatedly requests it and there is an inspectable artifact.
+Kafka, Airflow, Hive/HDFS and Kubernetes have inspectable bounded labs. Snowflake, BigQuery, ClickHouse and Scala are not claimed here: add any of them only when a coherent target role repeatedly requests it and there is an inspectable artifact.
