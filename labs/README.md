@@ -48,4 +48,4 @@ E1 arrives twice at version 1 with quantity 10, then at version 2 with quantity 
 
 Six records are not a scale benchmark. SQLite is a single-process learning sink. DuckDB is not Snowflake. Airflow's test runner is not a running scheduler or HA deployment. A kind Job is not an operated cloud Kubernetes service. One HDFS DataNode with replication=1 has no node-loss redundancy. Pinned compatibility versions are chosen for reproducible isolated exercises, not as a production security baseline; reassess support and vulnerabilities before any real deployment.
 
-See the [Ukrainian interview walkthrough](../docs/PLATFORM_INTERVIEW_UA.md) and [cross-portfolio coverage](https://github.com/TEZv/Data-Specialist-Portfolio/blob/main/docs/PLATFORM_COVERAGE.md).
+See [execution evidence](../docs/PLATFORM_EXECUTION_EVIDENCE.md) and [cross-portfolio coverage](https://github.com/TEZv/Data-Specialist-Portfolio/blob/main/docs/PLATFORM_COVERAGE.md). Personal interview preparation is kept outside the public repository.

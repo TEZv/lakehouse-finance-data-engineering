@@ -6,7 +6,7 @@
 
 [Kafka delivery and replay lab](labs/kafka/README.md) adds a real producer/consumer example, a transactional SQLite learning sink, version handling, quarantine and replay tests. A shared batch adapter connects to [Airflow → dbt](labs/README.md); [Hive/HDFS](labs/hive-hadoop/README.md) and [Kubernetes](labs/kubernetes/README.md) provide real storage/query and Job-execution labs. These modules are not yet connected to the original Spark pipeline.
 
-✅ **All four new platform jobs passed:** [integration run 34409326771](https://github.com/TEZv/lakehouse-finance-data-engineering/actions/runs/34409326771). See [exact evidence](docs/PLATFORM_EXECUTION_EVIDENCE.md), [run instructions](labs/README.md), [interview explanations in Ukrainian](docs/PLATFORM_INTERVIEW_UA.md), and the shared [coverage register](https://github.com/TEZv/Data-Specialist-Portfolio/blob/main/docs/PLATFORM_COVERAGE.md). Personal cloud deployment remains a separate gate.
+✅ **All four new platform jobs passed:** [integration run 34409326771](https://github.com/TEZv/lakehouse-finance-data-engineering/actions/runs/34409326771). See [exact evidence](docs/PLATFORM_EXECUTION_EVIDENCE.md), [run instructions](labs/README.md), and the shared [coverage register](https://github.com/TEZv/Data-Specialist-Portfolio/blob/main/docs/PLATFORM_COVERAGE.md). Personal cloud deployment remains a separate gate.
 
 **Scope:** the existing Spark pipeline is a small batch demo. Its test verifies Silver row-count stability on replay, not full-pipeline idempotency: Bronze and quarantine append again. Gold represents daily trading activity, not full financial exposure. Databricks execution is unverified; the job definition still needs workspace adaptation.
 
@@ -63,7 +63,7 @@ tests/                         # integration assertions against local Delta Lake
 databricks.yml                 # Asset Bundle entrypoint
 resources/databricks/          # future Databricks job definition
 .github/workflows/             # clean-environment CI
-docs/                          # interview notes, evidence map and deployment boundary
+docs/                          # execution evidence, technical scope and deployment boundary
 ```
 
 ## ▶️ Run locally
@@ -101,4 +101,4 @@ Not accurate yet:
 - “Deployed Databricks in production.”
 - “Operated Databricks jobs commercially.”
 
-See [evidence map](docs/EVIDENCE_MAP.md), [Databricks deployment runbook](docs/DATABRICKS_DEPLOYMENT_RUNBOOK.md), and [interview story](docs/INTERVIEW_STORY.md).
+See [evidence map](docs/EVIDENCE_MAP.md), [Databricks deployment runbook](docs/DATABRICKS_DEPLOYMENT_RUNBOOK.md), and [platform execution evidence](docs/PLATFORM_EXECUTION_EVIDENCE.md).
